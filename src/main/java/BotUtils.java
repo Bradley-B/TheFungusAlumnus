@@ -54,15 +54,15 @@ public class BotUtils {
     }
 
     static void sendBread(IChannel channel) {
-    	sendFile(channel, getRandomFile("C:\\Users\\Bradley\\workspace\\303AlumniDiscordBot\\bread"));
+    	sendFile(channel, getRandomFile("/remote/TheFungusAlumnus/src/main/resources/bread/"));
     }
     
     static void sendToast(IChannel channel) {
-    	sendFile(channel, getRandomFile("C:\\Users\\Bradley\\workspace\\303AlumniDiscordBot\\toast"));
+    	sendFile(channel, getRandomFile("/remote/TheFungusAlumnus/src/main/resources/toast/"));
     }
     
     static void sendWaluigi(IChannel channel) {
-    	sendFile(channel, new File("C:\\Users\\Bradley\\workspace\\303AlumniDiscordBot\\waluigi.gif"));
+    	sendFile(channel, new File("/remote/TheFungusAlumnus/src/main/resources/waluigi.gif"));
     }
     
     static void sendFile(IChannel channel, File file) {
@@ -75,9 +75,11 @@ public class BotUtils {
             }
         });
     }
-   
-    private static File getRandomFile(String directory) {
-       	File[] files = new File(directory).listFiles();
+    
+    private static File getRandomFile(String folder) {
+    	File directory = new File(folder);
+  //  	System.out.println("getting random file from "+directory.toPath());
+       	File[] files = directory.listFiles();
     	return files[new Random().nextInt(files.length)];
     }
     

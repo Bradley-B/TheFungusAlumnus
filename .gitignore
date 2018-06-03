@@ -1,0 +1,14 @@
+# java
+*.class
+
+# eclipse
+.classpath
+.project
+.settings
+.recommenders/
+
+# gradle
+bin/
+build/
+.gradle/
+.gradletasknamechache
