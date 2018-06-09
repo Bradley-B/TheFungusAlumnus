@@ -1,6 +1,5 @@
 import java.io.File;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
 import java.util.Random;
 
 import sx.blah.discord.api.ClientBuilder;
@@ -14,6 +13,7 @@ public class BotUtils {
     // Constants for use throughout the bot
     final static String BOT_PREFIX = "!";
     final static String BOT_NAME = "fungus";
+    final static String BOT_TAG = "<@452314331800141824>";
     
     // Handles the creation and getting of a IDiscordClient object for a token
     static IDiscordClient getBuiltDiscordClient(String token){
@@ -23,7 +23,6 @@ public class BotUtils {
         return new ClientBuilder()
                 .withToken(token)
                 .build();
-
     }
 
     // Helper functions to make certain aspects of the bot easier to use.
@@ -34,6 +33,7 @@ public class BotUtils {
             try{
                 channel.sendMessage(message);
             } catch (DiscordException e){
+                sendMePm("help: "+e.getMessage()+"\n\n"+e.getStackTrace());
                 System.err.println("Message could not be sent with error: ");
                 e.printStackTrace();
             }
@@ -69,8 +69,9 @@ public class BotUtils {
         RequestBuffer.request(() -> {
             try{
                 channel.sendFile(file);
-            } catch (Exception e){
-                System.err.println("File could not be sent with error: ");
+            } catch (FileNotFoundException e){
+                sendMePm("help: "+e.getMessage()+"\n\n"+e.getStackTrace());
+            	System.err.println("File could not be sent with error: ");
                 e.printStackTrace();
             }
         });
