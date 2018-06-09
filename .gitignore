@@ -12,3 +12,6 @@ bin/
 build/
 .gradle/
 .gradletasknamechache
+
+# project
+src/main/resources/downloaded/
