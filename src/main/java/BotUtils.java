@@ -1,10 +1,21 @@
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FileUtils;
 
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IMessage.Attachment;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RequestBuffer;
 
@@ -28,14 +39,11 @@ public class BotUtils {
     // Helper functions to make certain aspects of the bot easier to use.
     static void sendMessage(IChannel channel, String message){
 
-        // This might look weird but it'll be explained in another page.
         RequestBuffer.request(() -> {
             try{
                 channel.sendMessage(message);
             } catch (DiscordException e){
-                sendMePm("help: "+e.getMessage()+"\n\n"+e.getStackTrace());
-                System.err.println("Message could not be sent with error: ");
-                e.printStackTrace();
+            	Logger.log(e);
             }
         });
 
@@ -53,6 +61,35 @@ public class BotUtils {
 
     }
 
+    static List<File> downloadAttachments(IMessage message) {
+    	System.setProperty("http.agent", "Chrome");
+    	List<File> attachedFiles = new ArrayList<>();
+    	try {
+			for(Attachment attachment : message.getAttachments()) {
+				URL url = new URL(attachment.getUrl());
+				File destination = new File("/remote/TheFungusAlumnus/src/main/resources/downloaded/"+attachment.getFilename());
+				FileUtils.copyURLToFile(url, destination);
+				attachedFiles.add(destination);
+			}
+		} catch (Exception e) {
+			Logger.log(e);
+		}
+    	return attachedFiles;
+    }
+    
+    static void sendValidStamp(IChannel channel, File file) {
+    	if(file.getName().toLowerCase().endsWith(".png") || file.getName().toLowerCase().endsWith(".jpg") || file.getName().toLowerCase().endsWith(".jpeg")) {
+			try {
+				BufferedImage validStampedImage = new ValidImage(file).getImage();
+				File destination = new File("/remote/TheFungusAlumnus/src/main/resources/downloaded/valid_"+file.getName().substring(0, file.getName().indexOf("."))+".png");
+				ImageIO.write(validStampedImage, "png", destination);
+				sendFile(channel, destination);					
+			} catch (IOException e) {
+				Logger.log(e);
+			}
+		}			
+    }
+    
     static void sendBread(IChannel channel) {
     	sendFile(channel, getRandomFile("/remote/TheFungusAlumnus/src/main/resources/bread/"));
     }
@@ -70,9 +107,7 @@ public class BotUtils {
             try{
                 channel.sendFile(file);
             } catch (FileNotFoundException e){
-                sendMePm("help: "+e.getMessage()+"\n\n"+e.getStackTrace());
-            	System.err.println("File could not be sent with error: ");
-                e.printStackTrace();
+            	Logger.log(e);
             }
         });
     }

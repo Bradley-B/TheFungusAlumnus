@@ -11,6 +11,10 @@ public class ValidImage {
 	private BufferedImage validImage;
 	private BufferedImage result;
 	
+	public ValidImage(File imageFile) throws IOException {
+		this(ImageIO.read(imageFile));
+	}
+	
 	public ValidImage(BufferedImage image) throws IOException {
 		this.source = image;
 		validImage = ImageIO.read(new File("/remote/TheFungusAlumnus/src/main/resources/valid.png"));
@@ -25,7 +29,7 @@ public class ValidImage {
 		if(base.getHeight()!=stamp.getHeight() || base.getWidth() !=stamp.getWidth()) {
 			stamp = resize(stamp, base.getWidth(), base.getHeight());
 		}
-		BufferedImage stamped = new BufferedImage(stamp.getWidth(), stamp.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage stamped = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics2d = stamped.createGraphics();
 		graphics2d.drawImage(base, 0, 0, null);
 		graphics2d.drawImage(stamp, 0, 0, null);

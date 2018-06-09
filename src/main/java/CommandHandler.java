@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,14 +37,15 @@ public class CommandHandler {
 
 		System.out.println(event.getAuthor().getName()+": "+event.getMessage().getContent());
 		String message = event.getMessage().getContent();
+		List<File> attachedFiles = BotUtils.downloadAttachments(event.getMessage());
+
 		if(message.contains(BotUtils.BOT_TAG)) { //mentioned the bot
 			if(message.toLowerCase().contains("hello")) {
 				BotUtils.sendBread(event.getChannel());
 			} else if(message.toLowerCase().contains("roast") || message.toLowerCase().contains("toast")) {
 				BotUtils.sendToast(event.getChannel());
-	//		} else if(message.toLowerCase().contains("valid")) {
-	//			
-	//			BotUtils.sendFile(channel, file);
+			} else if(message.toLowerCase().contains("valid") && attachedFiles.size()>0) {
+				attachedFiles.forEach(file -> BotUtils.sendValidStamp(event.getChannel(), file));
 			} else {
 				BotUtils.sendWaluigi(event.getChannel());
 			}
