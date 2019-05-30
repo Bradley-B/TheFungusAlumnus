@@ -143,6 +143,11 @@ public class BotUtils {
 		sendMessage(pmChannel, message);
 	}
 
+	static void sendMorganPm(String message) {
+		IChannel pmChannel = MainRunner.cli.fetchUser(226127828905754624L).getOrCreatePMChannel();
+		sendMessage(pmChannel, message);
+	}
+
 	static void sendDynmapMessage(MessageReceivedEvent event) {
 		try {
 			URL tmpUrl = new URL("http://vidya.zapto.org/up/sendmessage");

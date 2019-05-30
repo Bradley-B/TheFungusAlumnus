@@ -61,7 +61,8 @@ public class CommandHandler {
 
 	@EventSubscriber
 	public void onUserJoined(UserJoinEvent event) {
-		event.getUser().getOrCreatePMChannel().sendMessage("Welcome to the 303 alumni chat\n\n"
+		event.getUser().getOrCreatePMChannel().sendMessage(
+				"Welcome to the 303 alumni chat\n\n"
 				+ "This is an alumni chat, so please only share this chat with other 303 alumni only. Alumni include anyone who is no longer in high school, and was on the team at any point in school. \n\n"
 				+ "Reply to this PM with \"setyear {year}\" where {year} is your high school graduation year to be added to the correct role.\n\n"
 				+ "Reply to this PM with \"setnick {nickname}\" where {nickname} is your desired nickname to be given a nickname. You can also set this in the discord app if you know how.\n\n"
@@ -72,12 +73,15 @@ public class CommandHandler {
 				+ "**#minecraft** The Nassons let us turn Audrey's world into our own. In the pinned messages you will find the server ip and dynmap address. Please join in and claim a spot of land as your own. Feel free to talk about the game in this chat or the relay chat. You can also talk to others on the server using the voice channel minecraft: talking edition\n"
 				+ "**#minecraft-chat-relay** Is a hyper-amazing modern feat of engineering where any messages sent on the minecraft server are sent to this channel. Anything you type here will also be broadcast to the minecraft server.\n"
 				+ "**#where-in-the-world-is-sarah** is a chat where you can post pictures of the rare Sarah Nasson. Try to be as creepy as possible. \n"
-				+ "**#server-requests** is where you can request anything, this includes but is not limited to, new channels and emojis. \n"
+				+ "**#server-requests** is where you can request server additions\n"
 				+ "**#bread-chat-iii** is a bread chat, share some whole grain memes in this chat. \n"
 				+ "**#bot-spam** is bot spam\n"
 				+ "**#alumni-photos** is where you can post any alumni related photos. \n"
-				+ "**#announcements** is a dead chat that shall never be used ever. ever.\n\n"
-				+ "\t - Morgan");
+				+ "**#announcements** is a dead chat that shall never be used, ever.\n\n"
+				+ "\t - Bradley and Morgan");
+
+		event.getUser().getOrCreatePMChannel().sendMessage(
+				"\n\nYou can see these channels once you are given the member role. If you haven't been given the member role you can bother us on **#let-me-in**");
 	}
 
 	@EventSubscriber
@@ -91,9 +95,8 @@ public class CommandHandler {
 		}
 
 		if(event.getChannel().isPrivate()) {
-			String startstuff = BotUtils.BOT_PREFIX+BotUtils.BOT_NAME;
-			String setyearCommand = startstuff + " setyear ";
-			String setnickCommand = startstuff + " setnick ";
+			String setyearCommand = "setyear ";
+			String setnickCommand = "setnick ";
 
 			if(message.startsWith(setyearCommand)) {
 				message = message.replace(setyearCommand, "");
@@ -102,13 +105,23 @@ public class CommandHandler {
 					int year = Integer.parseInt(message);
 					IRole role = roleMap.get(year);
 
+					if(year==2004 || year==2018) {
+						event.getAuthor().getOrCreatePMChannel().sendMessage("This role is locked. This incident has been reported, and you have been put on the naughty list.");
+						BotUtils.sendMePm(event.getAuthor().getName() + " tried to join role year \"" + year + "\" but it failed.");
+						BotUtils.sendMorganPm(event.getAuthor().getName() + " tried to join role year \"" + year + "\" but it failed.");
+						return;
+					}
+
 					if(role==null) {
 						event.getAuthor().getOrCreatePMChannel().sendMessage("That role year doesn't exist yet. Stay tuned.");
 						BotUtils.sendMePm(event.getAuthor().getName() + " tried to join role year \"" + year + "\" but it failed.");
+						BotUtils.sendMorganPm(event.getAuthor().getName() + " tried to join role year \"" + year + "\" but it failed.");
 					} else {
 						List<IRole> rolesUserAlreadyHas = event.getAuthor().getRolesForGuild(guild);
+						rolesUserAlreadyHas.removeAll(roleMap.values());
 						rolesUserAlreadyHas.add(role);
 						guild.editUserRoles(event.getAuthor(), rolesUserAlreadyHas.toArray(new IRole[0]));
+						event.getAuthor().getOrCreatePMChannel().sendMessage("you have been given role " + role.getName());
 					}
 
 				} catch (NumberFormatException e) {
@@ -121,6 +134,7 @@ public class CommandHandler {
 				message = message.replace(setnickCommand, "");
 				IUser author = event.getAuthor();
 				guild.setUserNickname(author, message);
+				event.getAuthor().getOrCreatePMChannel().sendMessage("you have been given nickname " + message);
 				return;
 			}
 		}
