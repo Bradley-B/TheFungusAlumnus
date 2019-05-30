@@ -29,6 +29,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 	
 	compile "com.discord4j:Discord4J:2.10.1"
+	compile 'com.googlecode.json-simple:json-simple:1.1.1'	
 }
 
 jar {
@@ -38,3 +39,6 @@ jar {
 		)
 	}
 } 
+
+jar.enabled = false
+assemble.dependsOn(shadowJar)

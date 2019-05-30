@@ -5,7 +5,8 @@ import sx.blah.discord.handle.obj.IGuild;
 public class MainRunner {
 
 	static IDiscordClient cli;
-	
+    static IChannel mcRelayChannel;
+
     public static void main(String[] args){
 
         if(args.length != 1){
@@ -20,11 +21,12 @@ public class MainRunner {
         
         // Only login after all events are registered otherwise some may be missed.
         cli.login();
-        
+
         try {Thread.sleep(5000);} catch (InterruptedException e) {}
         IGuild guild = cli.getGuilds().get(0);
         IChannel channel = guild.getChannelByID(452323794065948707L);
-        channel.sendMessage("you called?");
+        mcRelayChannel = guild.getChannelByID(562719599947415555L);
+        channel.sendMessage("online");
     }
 
 }
