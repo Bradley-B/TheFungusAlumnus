@@ -17,13 +17,15 @@ public class MainRunner {
         cli = BotUtils.getBuiltDiscordClient(args[0]);
 
         // Register a listener via the EventSubscriber annotation which allows for organization and delegation of events
-        cli.getDispatcher().registerListener(new CommandHandler());
+        CommandHandler commandHandler = new CommandHandler();
+        cli.getDispatcher().registerListener(commandHandler);
         
         // Only login after all events are registered otherwise some may be missed.
         cli.login();
 
         try {Thread.sleep(5000);} catch (InterruptedException e) {}
         IGuild guild = cli.getGuilds().get(0);
+        commandHandler.setGuild(guild);
         IChannel channel = guild.getChannelByID(452323794065948707L);
         mcRelayChannel = guild.getChannelByID(562719599947415555L);
         channel.sendMessage("online");
