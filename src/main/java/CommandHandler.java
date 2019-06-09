@@ -122,11 +122,14 @@ public class CommandHandler {
 						rolesUserAlreadyHas.add(role);
 						guild.editUserRoles(event.getAuthor(), rolesUserAlreadyHas.toArray(new IRole[0]));
 						event.getAuthor().getOrCreatePMChannel().sendMessage("you have been given role " + role.getName());
+						BotUtils.sendMePm(event.getAuthor().getName() + " has been given role " + message);
+						BotUtils.sendMorganPm(event.getAuthor().getName() + " has been given role " + message);
 					}
 
 				} catch (NumberFormatException e) {
 					event.getAuthor().getOrCreatePMChannel().sendMessage("setyear must be a number. Example: " + setyearCommand + "1995");
 					BotUtils.sendMePm(event.getAuthor().getName() + " tried to join role name " + message + " but it failed.");
+					BotUtils.sendMorganPm(event.getAuthor().getName() + " tried to join role name " + message + " but it failed.");
 				}
 
 				return;
